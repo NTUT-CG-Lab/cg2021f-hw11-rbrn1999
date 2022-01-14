@@ -107,7 +107,7 @@ class threejsViewer {
                 texture.type = THREE.UnsignedByteType;
                 texture.minFilter = texture.magFilter = THREE.LinearFilter;
 
-                let cmtexture = new THREE.DataTexture(colormap, 256, 1);
+                let cmtexture = new THREE.DataTexture(colormap, 256, 1, THREE.RGBAFormat);
                 cmtexture.format = THREE.RGBAFormat;
                 cmtexture.type = THREE.UnsignedByteType;
 
@@ -132,6 +132,7 @@ class threejsViewer {
                 this.scene.add(mesh); 
             }
             else if (volume.used && uniforms["u_sizeEnable"].value != 1) {
+                uniforms = mesh.material.uniforms;
                 let texture = new THREE.DataTexture3D(volume.sizeData, dims[0], dims[1], dims[2]);
                 texture.format = THREE.RedFormat;
                 texture.type = THREE.UnsignedByteType;
@@ -140,26 +141,16 @@ class threejsViewer {
                 uniforms['u_sizeData'].value = texture;
             }
             else if (volume.used) {
+                uniforms = mesh.material.uniforms;
                 uniforms['u_sizeData'].value.image = {data: volume.sizeData}
                 uniforms['u_dizeData'].value.needUpdate = true;
             }
             else {
+                uniforms = mesh.material.uniforms;
+                uniforms['u_cmdata'].value = new THREE.DataTexture(colormap,256,1);
+                uniforms['u_renderstyle'].value = arg.renderType;
                 // ��s�Ѽ�
             }
-            // if (volume.used) {
-            //     uniforms = mesh.material.uniforms;
-            //     if(uniforms['u_sizeEnable'] == 0) {
-            //         let texture = new THREE.DataTexture3D(volume.sizeData, dims[0], dims[1], dims[2]);
-            //         texture.format = THREE.RedFormat;
-            //         texture.type = THREE.UnsignedByteType;
-    
-            //         uniforms['u_sizeEnable'].value = 1;
-            //         uniforms['u_sizeData'].value = texture;
-            //     } else {
-            //         uniforms['u_sizeData'].value.image = {data: volume.sizeData}
-            //         uniforms['u_dizeData'].value.needUpdate = true;
-            //     }
-            // } 
             this.renderScene()
         }
 
